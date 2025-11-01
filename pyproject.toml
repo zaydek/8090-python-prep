@@ -4,13 +4,22 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["colorful>=0.5.8"]
+
+[project.scripts]
+parse-int-safe = "parse_int_safe:main"
+blackjack = "blackjack:main"
+checkers = "checkers:main"
+rock_paper_scissors = "rock_paper_scissors:main"
+snake = "snake:main"
+sudoku = "sudoku:main"
+tic_tac_toe = "tic_tac_toe:main"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.4.2",
-    "ruff>=0.14.3",
-]
+dev = ["pytest>=8.4.2", "ruff>=0.14.3"]
 
 [tool.ruff]
 line-length = 88
+
+[tool.uv]
+package = true

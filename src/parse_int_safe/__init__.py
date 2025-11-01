@@ -1,22 +1,23 @@
 """Safe integer parsing with optional bounds validation."""
 
 from enum import Enum, auto
-from typing import Generic, TypeVar, NamedTuple, Optional
+from typing import NamedTuple, Optional
 import sys
+from common.result import Result, Ok, Err
 
-T = TypeVar("T")
-E = TypeVar("E")
-
-
-class Ok(NamedTuple, Generic[T]):
-    value: T
-
-
-class Err(NamedTuple, Generic[E]):
-    error: E
-
-
-type Result[T, E] = Ok[T] | Err[E]
+# T = TypeVar("T")
+# E = TypeVar("E")
+#
+#
+# class Ok(NamedTuple, Generic[T]):
+#     value: T
+#
+#
+# class Err(NamedTuple, Generic[E]):
+#     error: E
+#
+#
+# type Result[T, E] = Ok[T] | Err[E]
 
 
 class ParseIntErrorKind(Enum):
