@@ -5,20 +5,6 @@ from typing import NamedTuple, Optional
 import sys
 from common.result import Result, Ok, Err
 
-# T = TypeVar("T")
-# E = TypeVar("E")
-#
-#
-# class Ok(NamedTuple, Generic[T]):
-#     value: T
-#
-#
-# class Err(NamedTuple, Generic[E]):
-#     error: E
-#
-#
-# type Result[T, E] = Ok[T] | Err[E]
-
 
 class ParseIntErrorKind(Enum):
     NOT_AN_INTEGER = auto()

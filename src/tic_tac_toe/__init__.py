@@ -3,33 +3,33 @@ import colorful as cf
 
 def print_board() -> None:
     # --- Styles ---
-    X = cf.bold & cf.red
-    O = cf.bold & cf.blue
-    empty = cf.dim_grey
-    grid_line = cf.cyan
-    number = cf.yellow
+    X = cf.bold
+    O = cf.bold
+    empty = cf.gray
+    grid_line = cf.gray
+    number = cf.gray
 
     # --- Static board ---
     board = [["X", " ", "O"], [" ", "X", " "], ["O", " ", "X"]]
 
     # --- Header ---
-    print("\n" + cf.bold("   TIC TAC TOE   ").background_lightgrey.on_darkgrey + "\n")
+    print("\n" + cf.bold("   TIC TAC TOE   ") + "\n")
 
     # --- Rows ---
     for i, row in enumerate(board):
         cells = []
         for j, cell in enumerate(row):
             if cell == "X":
-                cells.append(X(" X "))
+                cells.append(str(X(" X ")))
             elif cell == "O":
-                cells.append(O(" O "))
+                cells.append(str(O(" O ")))
             else:
                 pos = i * 3 + j + 1
-                cells.append(number(f" {pos} "))
-        print(grid_line("│").join(cells))
+                cells.append(str(number(f" {pos} ")))
+        print(str(grid_line("│")).join(cells))
 
         if i < 2:
-            print(grid_line("───┼───┼───"))
+            print(str(grid_line("───┼───┼───")))
 
     # --- Footer ---
     print("\n" + cf.italic("Use numbers 1–9 to place your mark.") + "\n")

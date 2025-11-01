@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = ["colorful>=0.5.8"]
 
+# Command-line scripts that become available as `uv run <script-name>`
 [project.scripts]
 parse-int-safe = "parse_int_safe:main"
 blackjack = "blackjack:main"
@@ -19,7 +20,7 @@ tic_tac_toe = "tic_tac_toe:main"
 dev = ["pytest>=8.4.2", "ruff>=0.14.3"]
 
 [tool.ruff]
-line-length = 88
+line-length = 88 # Python is kind of retarded
 
 [tool.uv]
-package = true
+package = true # Enable package building/installation to make scripts available
