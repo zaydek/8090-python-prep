@@ -1,3 +1,5 @@
+"""Safe integer parsing with optional bounds validation."""
+
 from enum import Enum, auto
 from typing import Generic, TypeVar, NamedTuple, Optional
 import sys
@@ -41,38 +43,49 @@ def parse_int_safe(s: str, bounds: Bounds = Bounds()) -> Result[int, ParseIntErr
         return Err(ParseIntErrorKind.NOT_AN_INTEGER)
 
 
-def main() -> None:
-    # Prompt the user for their name
-    name = input("What is your name? ").strip()
-    print(f"Hello, {name}!")
+def main(
+    input_fn=input,
+    output_fn=print,
+    exit_fn=sys.exit,
+    max_tries: int = 3,
+) -> None:
+    """Main CLI program with dependency injection for testing.
 
-    MAX_TRIES = 3
+    Args:
+        input_fn: Function to get user input (default: builtin input)
+        output_fn: Function to output messages (default: builtin print)
+        exit_fn: Function to exit the program (default: sys.exit)
+        max_tries: Maximum number of invalid attempts allowed
+    """
+    # Prompt the user for their name
+    name = input_fn("What is your name? ").strip()
+    output_fn(f"Hello, {name}!")
+
     tries = 0
 
     # Prompt the user for their age
-    while tries < MAX_TRIES:
-        age = input("What is your age? ").strip()
+    while tries < max_tries:
+        age = input_fn("What is your age? ").strip()
         result = parse_int_safe(age, Bounds(min=0, max=100))
 
         # Check if the age is valid
         match result:
             case Ok(value):
-                print(f"You are {value} years old.")
-                break
+                output_fn(f"You are {value} years old.")
+                return
             case Err(error):
                 # Print the error message
                 match error:
                     case ParseIntErrorKind.NOT_AN_INTEGER:
-                        print("Error: Not a valid integer. Try again.")
+                        output_fn("Error: Not a valid integer. Try again.")
                     case ParseIntErrorKind.TOO_LOW:
-                        print("Error: Age too low (must be >=0). Try again.")
+                        output_fn("Error: Age too low (must be >=0). Try again.")
                     case ParseIntErrorKind.TOO_HIGH:
-                        print("Error: Age too high (must be <=100). Try again.")
+                        output_fn("Error: Age too high (must be <=100). Try again.")
                 tries += 1
 
-    if tries == MAX_TRIES:
-        print("Error: Too many invalid attempts. Exiting.")
-        sys.exit(1)
+    output_fn("Error: Too many invalid attempts. Exiting.")
+    exit_fn(1)
 
 
 if __name__ == "__main__":
