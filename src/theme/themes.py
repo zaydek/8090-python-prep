@@ -24,7 +24,7 @@ ANSI_16_RGB = [
     (255, 255, 255),
 ]
 
-# ANSI codes
+# Define the ANSI codes
 ANSI_CODE_BLACK = 0
 ANSI_CODE_DARK_RED = 1
 ANSI_CODE_DARK_GREEN = 2
@@ -92,7 +92,7 @@ class CustomTheme:
             return _create_rgb_color_style(r, g, b)
         raise ValueError("Invalid color value")
 
-    def get_color(self) -> str:
+    def color_value(self) -> str:
         return self.color_value
 
     def bold_color(self, s: str) -> str:
@@ -138,7 +138,7 @@ class PlainTheme:
         return s
 
 
-# Predefined themes
+# Define the themes
 ANSI_CODE_BLACK_THEME = new_theme_from_ansi_code(ANSI_CODE_BLACK)
 ANSI_CODE_DARK_RED_THEME = new_theme_from_ansi_code(ANSI_CODE_DARK_RED)
 ANSI_CODE_DARK_GREEN_THEME = new_theme_from_ansi_code(ANSI_CODE_DARK_GREEN)
