@@ -20,7 +20,7 @@ tic_tac_toe = "tic_tac_toe:main"
 dev = ["pytest>=8.4.2", "ruff>=0.14.3"]
 
 [tool.ruff]
-line-length = 88 # Python is kind of retarded
+line-length = 120
 
 [tool.uv]
 package = true # Enable package building/installation to make scripts available
