@@ -81,20 +81,49 @@ class AnsiCodeEnum(IntEnum):
 # fmt: on
 
 
-# Returns True if the code is a foreground color
-def is_foreground_color(code: AnsiCodeEnum) -> bool:
-    return (
+#### # Returns True if the code is a foreground color
+#### def is_foreground_color(code: AnsiCodeEnum) -> bool:
+####     return (
+####         AnsiCodeEnum.FOREGROUND_BLACK <= code <= AnsiCodeEnum.FOREGROUND_WHITE
+####         or AnsiCodeEnum.FOREGROUND_HIGH_INTENSITY_BLACK <= code <= AnsiCodeEnum.FOREGROUND_HIGH_INTENSITY_WHITE
+####     )
+####
+####
+#### # Returns True if the code is a background color
+#### def is_background_color(code: AnsiCodeEnum) -> bool:
+####     return (
+####         AnsiCodeEnum.BACKGROUND_BLACK <= code <= AnsiCodeEnum.BACKGROUND_WHITE
+####         or AnsiCodeEnum.BACKGROUND_HIGH_INTENSITY_BLACK <= code <= AnsiCodeEnum.BACKGROUND_HIGH_INTENSITY_WHITE
+####     )
+
+_OFF_MAP: Dict[AnsiCodeEnum, AnsiCodeEnum] = {
+    AnsiCodeEnum.BOLD: AnsiCodeEnum.BOLD_OFF,
+    AnsiCodeEnum.DIM: AnsiCodeEnum.DIM_OFF,
+    AnsiCodeEnum.ITALIC: AnsiCodeEnum.ITALIC_OFF,
+    AnsiCodeEnum.UNDERLINE: AnsiCodeEnum.UNDERLINE_OFF,
+    AnsiCodeEnum.BLINK: AnsiCodeEnum.BLINK_OFF,
+    AnsiCodeEnum.INVERT: AnsiCodeEnum.INVERT_OFF,
+    AnsiCodeEnum.HIDDEN: AnsiCodeEnum.HIDDEN_OFF,
+    AnsiCodeEnum.STRIKE: AnsiCodeEnum.STRIKE_OFF,
+}
+
+
+def get_off_code(code: AnsiCodeEnum) -> AnsiCodeEnum | None:
+    if (
         AnsiCodeEnum.FOREGROUND_BLACK <= code <= AnsiCodeEnum.FOREGROUND_WHITE
         or AnsiCodeEnum.FOREGROUND_HIGH_INTENSITY_BLACK <= code <= AnsiCodeEnum.FOREGROUND_HIGH_INTENSITY_WHITE
-    )
-
-
-# Returns True if the code is a background color
-def is_background_color(code: AnsiCodeEnum) -> bool:
-    return (
+    ) or code == AnsiCodeEnum.EXTENDED_FOREGROUND:
+        return AnsiCodeEnum.FOREGROUND_RESET
+    elif (
         AnsiCodeEnum.BACKGROUND_BLACK <= code <= AnsiCodeEnum.BACKGROUND_WHITE
         or AnsiCodeEnum.BACKGROUND_HIGH_INTENSITY_BLACK <= code <= AnsiCodeEnum.BACKGROUND_HIGH_INTENSITY_WHITE
-    )
+    ) or code == AnsiCodeEnum.EXTENDED_BACKGROUND:
+        return AnsiCodeEnum.BACKGROUND_RESET
+    #### elif code := _OFF_MAP.get(code):
+    ####     return code
+    #### else:
+    ####     return None
+    return _OFF_MAP.get(code)
 
 
 class AnsiStyle:
@@ -134,21 +163,33 @@ class AnsiStyle:
         off_codes: List[AnsiCodeEnum] = []
         reversed_codes = reversed(codes)
         for code in reversed_codes:
-            # Check if the code is a foreground or background color
-            if is_foreground_color(code):
-                off_codes.append(AnsiCodeEnum.FOREGROUND_RESET)
-            # Check if the code is a background color
-            elif is_background_color(code):
-                off_codes.append(AnsiCodeEnum.BACKGROUND_RESET)
-            # Check if the code has an off code
-            elif code in OFF_MAP:
-                off_codes.append(OFF_MAP[code])
-            elif code == AnsiCodeEnum.EXTENDED_FOREGROUND:
-                # TODO: This part seems highly repetitive; can we refactor?
-                off_codes.append(AnsiCodeEnum.FOREGROUND_RESET)
-            elif code == AnsiCodeEnum.EXTENDED_BACKGROUND:
-                # TODO: This part seems highly repetitive; can we refactor?
-                off_codes.append(AnsiCodeEnum.BACKGROUND_RESET)
+            #### # Check if the code is a foreground or background color
+            #### if is_foreground_color(code):
+            ####     off_codes.append(AnsiCodeEnum.FOREGROUND_RESET)
+            #### # Check if the code is a background color
+            #### elif is_background_color(code):
+            ####     off_codes.append(AnsiCodeEnum.BACKGROUND_RESET)
+            #### # Check if the code has an off code
+            #### elif code in OFF_MAP:
+            ####     off_codes.append(OFF_MAP[code])
+            #### elif code == AnsiCodeEnum.EXTENDED_FOREGROUND:
+            ####     # TODO: This part seems highly repetitive; can we refactor?
+            ####     off_codes.append(AnsiCodeEnum.FOREGROUND_RESET)
+            #### elif code == AnsiCodeEnum.EXTENDED_BACKGROUND:
+            ####     # TODO: This part seems highly repetitive; can we refactor?
+            ####     off_codes.append(AnsiCodeEnum.BACKGROUND_RESET)
+
+            #### if is_foreground_color(code) or code == AnsiCodeEnum.EXTENDED_FOREGROUND:
+            ####     off_codes.append(AnsiCodeEnum.FOREGROUND_RESET)
+            #### elif is_background_color(code) or code == AnsiCodeEnum.EXTENDED_BACKGROUND:
+            ####     off_codes.append(AnsiCodeEnum.BACKGROUND_RESET)
+            #### elif code := OFF_MAP.get(code):
+            ####     off_codes.append(code)
+
+            if off_code := get_off_code(code):
+                off_codes.append(off_code)
+
+        # TODO: What the fuck?
         end_sequence = AnsiStyle._escape_codes(*off_codes) if off_codes else ""
 
         # Return the combined start and end sequences
